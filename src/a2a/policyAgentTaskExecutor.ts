@@ -53,7 +53,7 @@ export class policyAgentTaskExecutor implements AgentExecutor {
       artifact: {
         artifactId: `artifact-${effectiveTaskId}`,
         name: 'result.txt',
-        parts: [{ kind: 'text', text: `Task ${effectiveTaskId} completed. \n\n Here is the answer ${answer}` }],
+        parts: [{ kind: 'text', text: `\n\nTask ${effectiveTaskId} completed.\n\nHere is the answer: ${answer}` }],
       },
     };
     eventBus.publish(artifactUpdate);

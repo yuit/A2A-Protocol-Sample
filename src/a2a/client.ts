@@ -39,16 +39,14 @@ async function main() {
     }
   } else if (response.kind === 'task') {
     const task = response as Task;
-    const latestMessage = task.history?.at(-1);
-    const firstPart = latestMessage?.parts?.[0];
-    if (firstPart && firstPart.kind === 'text') {
-      // eslint-disable-next-line no-console
-      console.log('Task:', task);
-      console.log('Agent answer (task):', firstPart.text);
-      return;
+    if (task.artifacts && task.artifacts.length > 0) {
+      console.log(`Artifact found: ${task.artifacts[0].name}`);
+      if (task.artifacts[0].parts[0].kind === 'text') {
+        console.log(`Artifact Content: ${task.artifacts[0].parts[0].text}`);
+      } else {
+        console.log(`Artifact Content: ${task.artifacts[0].parts[0]}`);
+      }
     }
-    // eslint-disable-next-line no-console
-    console.log('Received task without text answer:', task);
     return;
   }
 
