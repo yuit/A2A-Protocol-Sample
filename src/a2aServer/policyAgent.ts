@@ -20,6 +20,7 @@ import {
   RequestContext,
 } from '@a2a-js/sdk/server';
 import { initA2AServer } from './utils.js';
+import { logger } from '../logger.js';
 
 dotenv.config();
 
@@ -111,7 +112,7 @@ class policyAgentMessageExecutor implements AgentExecutor {
     const { userMessage, contextId } = requestContext;
 
     // Log basic info about the incoming request
-    console.log(
+    logger.info(
       '[PolicyAgentExecutor] Incoming request',
       `contextId=${contextId ?? userMessage.contextId ?? 'none'}`
     );
@@ -175,6 +176,12 @@ class policyAgentTaskExecutor implements AgentExecutor {
       eventBus.publish(initialTask);
     }
     
+    // Log basic info about the incoming request
+    logger.info(
+      '[PolicyAgentExecutor] Incoming request',
+      `contextId=${contextId ?? userMessage.contextId ?? 'none'}`,
+      `taskId=${effectiveTaskId}`,
+    );
     // Extract the user's text message from the RequestContext
     const textParts = (userMessage.parts ?? []).filter(
       (p): p is TextPart => p.kind === 'text'

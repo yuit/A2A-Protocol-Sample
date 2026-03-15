@@ -14,7 +14,7 @@ import {
   toA2AParts,
   toAdkEvent,
 } from 'adk/core';
-
+import { logger } from './logger.js';
 dotenv.config();
 
 const A2A_CLIENT_FACTORY = new ClientFactory();
@@ -61,6 +61,7 @@ export class PolicyA2AClientAgent extends BaseAgent {
     if (!message) {
       throw new Error('No message to send');
     }
+    logger.info(`${this._internalName} sending message to ${this._a2aServerUrl}`);
     const response = await this._a2aClient.sendMessage({ message });
     const responseAdkEvent = toAdkEvent(
       response,
@@ -70,7 +71,8 @@ export class PolicyA2AClientAgent extends BaseAgent {
     if (!responseAdkEvent) {
       throw new Error('No response event to yield');
     }
-    console.debug('Policy A2A Agent response:', response);
+    logger.info(`${this._internalName} RawResponse: ${response}`);
+    logger.info(`${this._internalName} RawResponseAdkEvent: ${responseAdkEvent}`);
     yield responseAdkEvent;
   }
 }
@@ -98,7 +100,7 @@ async function runAgent(prompt: string) {
     newMessage: createUserContent(prompt),
   })) {
     if (isFinalResponse(event) && event.content?.parts?.[0]?.text) {
-      console.log(event.content.parts[0].text);
+      logger.info(`${runner.appName} Final Response: ${event.content.parts[0].text}`);
     }
   }
 }

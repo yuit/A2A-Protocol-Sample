@@ -12,6 +12,7 @@ import {
   restHandler,
   UserBuilder,
 } from '@a2a-js/sdk/server/express';
+import { logger } from '../logger.js';
 dotenv.config();
 
 type A2AAgentConfig = {
@@ -43,7 +44,8 @@ export function initA2AServer(config: A2AAgentConfig) {
   );
 
   app.listen(port, () => {
-    console.log(`🚀 Server started on ${url}`);
-    console.log(`Agent card: ${url}/${AGENT_CARD_PATH}`);
+    logger.info(`A2AServer Name: ${name}`);
+    logger.info(`A2AServer URL: ${url}`);
+    logger.info(`A2AServer Agent card: ${url}/${AGENT_CARD_PATH}`);
   });
 }
