@@ -13,17 +13,17 @@ const policyA2AClientAgent = new RemoteA2AClientAgent({
   a2aServerUrl: `http://localhost:${process.env.POLICY_AGENT_PORT}`,
 });
 
-// const researchA2AClientAgent = new RemoteA2AClientAgent({
-//   name: "PolicyA2AClientAgent",
-//   description: `Provides healthcare information about symptoms, health
-//     conditions, treatments, and procedures using up-to-date web resources.`,
-//   a2aServerUrl: `http://localhost:${process.env.POLICY_AGENT_PORT}`,
-// });
+const researchA2AClientAgent = new RemoteA2AClientAgent({
+  name: "ResearchA2AClientAgent",
+  description: `Provides healthcare information about symptoms, health
+    conditions, treatments, and procedures using up-to-date web resources.`,
+  a2aServerUrl: `http://localhost:${process.env.RESEARCH_AGENT_PORT}`,
+});
 
 const rootAgent = new SequentialAgent({
   name: "Root-Sequential-Agent",
   description: "Healthcare Routing Agent",
-  subAgents: [policyA2AClientAgent],
+  subAgents: [policyA2AClientAgent, researchA2AClientAgent],
 });
 
 const runner = new InMemoryRunner({
@@ -42,4 +42,4 @@ async function runAgent(prompt: string) {
   }
 }
 
-void runAgent('What is the policy on deductible?');
+void runAgent('How can I get mental health therapy?');
