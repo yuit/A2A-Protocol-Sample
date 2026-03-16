@@ -8,6 +8,7 @@ import {
   type Event,
   toA2AParts,
   toAdkEvent,
+  createEvent,
 } from 'adk/core';
 import { logger } from './logger.js';
 
@@ -58,7 +59,8 @@ export class RemoteA2AClientAgent extends BaseAgent {
     }
     const message = contextToA2AMessage(context);
     if (!message) {
-      throw new Error('No message to send');
+      logger.error('No message to send to A2A server');
+      return;
     }
     logger.debug(`[${this.name}] sending message to ${this._a2aServerUrl}`);
     const response = await this._a2aClient.sendMessage({ message });
@@ -68,10 +70,17 @@ export class RemoteA2AClientAgent extends BaseAgent {
       this.name,
     );
     if (!responseAdkEvent) {
-      throw new Error('No response event to yield');
+      logger.error('No response event to yield');
+      yield createEvent({
+        invocationId: context.invocationId,
+        author: this.name,
+        errorCode: 'UNSUPPORTED_A2A_RESPONSE_TO_ADK_EVENT',
+        errorMessage: 'A2A response cannot be converted to ADK event',
+      });
+    } else {
+      logger.debug(`[${this.name}] RawResponse:`, response);
+      logger.debug(`[${this.name}] RawResponseAdkEvent:`, responseAdkEvent);
+      yield responseAdkEvent;
     }
-    logger.debug(`[${this.name}] RawResponse:`, response);
-    logger.debug(`[${this.name}] RawResponseAdkEvent:`, responseAdkEvent);
-    yield responseAdkEvent;
   }
 }
