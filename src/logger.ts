@@ -1,6 +1,12 @@
+import path from 'path';
 import winston from 'winston';
 
 const { combine, errors, colorize, printf, timestamp } = winston.format;
+
+// Derive a short name for the current entry point file (e.g. "sequentialAgents").
+const entryPoint =
+  (process.argv[1] && path.basename(process.argv[1], path.extname(process.argv[1]))) ||
+  'app';
 
 const isDebugMode = process.execArgv.some((arg) =>
   arg.includes('--inspect') || arg.includes('--debug'),
@@ -30,19 +36,12 @@ const winstonLogger = winston.createLogger({
     devFormat,
   ),
   transports: [
-    // Console for warnings and errors only (avoids stdout noise for info/debug).
-    new winston.transports.Console({ level: 'warn' }),
-    // Info-level logs written to a file named "info".
+    // All levels written to a single file prefixed with the entry point name.
     new winston.transports.File({
-      filename: 'logs/info',
-      level: 'info',
-      options: { flags: 'w' },
-    }),
-    // Debug-level logs written to a file named "debug".
-    new winston.transports.File({
-      filename: 'logs/debug',
+      filename: `logs/${entryPoint}.log`,
       level: 'debug',
-      options: { flags: 'w' },
+      // Append forever; do not truncate between runs.
+      options: { flags: 'a' },
     }),
   ],
 });
@@ -52,23 +51,13 @@ export const logger = {
     if (!isDebugMode) return;
     winstonLogger.debug(args.map(formatArg).join(' '));
   },
-  info: (...args: unknown[]) =>
-    winstonLogger.info(args.map(formatArg).join(' ')),
+  info: (...args: unknown[]) => {
+    winstonLogger.info(args.map(formatArg).join(' '));
+  },
   warn: (...args: unknown[]) => {
-    const msg = args.map(formatArg).join(' ');
-    console.error(msg);
-    winstonLogger.warn(msg);
+    winstonLogger.warn(args.map(formatArg).join(' '));
   },
   error: (...args: unknown[]) => {
-    const msg = args.map(formatArg).join(' ');
-    console.error(msg);
-    winstonLogger.error(msg);
+    winstonLogger.error(args.map(formatArg).join(' '));
   },
-};
-
-// Capture any library output that uses console.log (e.g., dotenv debug)
-// and route it through our error logger / stderr instead of stdout.
-// eslint-disable-next-line no-console
-console.log = (...args: unknown[]) => {
-  logger.error(...args);
 };

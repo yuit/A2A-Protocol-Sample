@@ -4,6 +4,7 @@ import { InMemoryRunner, isFinalResponse, SequentialAgent } from 'adk/core';
 import { logger } from './logger.js';
 import { RemoteA2AClientAgent } from './remoteA2AClientAgent.js';
 
+// Load configuration from .env at project root
 dotenv.config();
 
 const policyA2AClientAgent = new RemoteA2AClientAgent({
