@@ -1,0 +1,5 @@
+app:
+  name: policy_research_agent
+  # Python dotted path to the root agent object
+  root_agent: src.policy_research_agent.root_agent
+
