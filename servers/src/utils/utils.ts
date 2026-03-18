@@ -12,7 +12,7 @@ import {
   restHandler,
   UserBuilder,
 } from '@a2a-js/sdk/server/express';
-import { logger } from '../logger.js';
+import { logger } from './logger.js';
 dotenv.config();
 
 type A2AAgentConfig = {

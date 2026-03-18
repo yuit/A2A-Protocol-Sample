@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 import { ClientFactory } from '@a2a-js/sdk/client';
 import { Message, MessageSendParams, Task } from '@a2a-js/sdk';
-import { logger } from './logger.js';
+import { logger } from './utils/logger.js';
 
 // Load configuration from .env at project root
 dotenv.config();

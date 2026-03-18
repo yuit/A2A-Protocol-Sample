@@ -19,8 +19,8 @@ import {
   ExecutionEventBus,
   RequestContext,
 } from '@a2a-js/sdk/server';
-import { initA2AServer } from './utils.js';
-import { logger } from '../logger.js';
+import { initA2AServer } from '../utils/utils.js';
+import { logger } from '../utils/logger.js';
 
 // Load configuration from .env at project root
 dotenv.config();

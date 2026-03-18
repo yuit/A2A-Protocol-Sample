@@ -4,7 +4,7 @@ import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import type { Doctor } from './doctor.d.ts';
+import type { Doctor } from './doctor.js';
 
 /**
  * Basic MCP server scaffold for listing doctors.
