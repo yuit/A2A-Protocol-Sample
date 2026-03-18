@@ -9,9 +9,9 @@
   "scripts": {
     "build": "tsc",
     "client": "rm -f logs/a2aClientsTester.log && node ./dist/a2aClientsTester.js",
-    "pa": "rm -f logs/policyAgent.log && node --debug ./dist/a2aServer/policyAgent.js",
-    "ra": "rm -f logs/researchAgent.log && node --debug ./dist/a2aServer/researchAgent.js",
-    "fp": "rm -f logs/findProvidersAgent.log && node --debug ./dist/a2aServer/findProvidersAgent.js",
+    "pa": "rm -f logs/policyAgent.log && node --inspect ./dist/a2aServer/policyAgent.js",
+    "ra": "rm -f logs/researchAgent.log && node --inspect ./dist/a2aServer/researchAgent.js",
+    "fp": "rm -f logs/findProvidersAgent.log && node --inspect ./dist/a2aServer/findProvidersAgent.js",
     "seq": "rm -f logs/sequentialAgents.log && node ./dist/clientAgents/sequentialAgents.js"
   },
   "dependencies": {

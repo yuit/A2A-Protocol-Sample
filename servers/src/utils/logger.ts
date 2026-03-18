@@ -9,7 +9,7 @@ const entryPoint =
   'app';
 
 const isDebugMode = process.execArgv.some((arg) =>
-  arg.includes('--inspect') || arg.includes('--debug'),
+  arg.includes('--inspect') || arg.includes('--inspect-brk'),
 );
 
 function formatArg(arg: unknown): string {

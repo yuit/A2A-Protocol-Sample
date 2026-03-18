@@ -8,4 +8,5 @@ dependencies = [
   "google-adk[a2a]",
   "a2a-sdk",
   "python-dotenv",
+  "agent-framework-a2a>=1.0.0b260311",
 ]
