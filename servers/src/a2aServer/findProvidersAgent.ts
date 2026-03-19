@@ -3,18 +3,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { FindProvidersAgent } from './findProvidersMCPClient.js';
 import { ExecutionEventBus, RequestContext, AgentExecutor } from '@a2a-js/sdk/server';
 import { AgentCard, Message, TextPart } from '@a2a-js/sdk';
-import { initA2AServer } from '../utils/utils.js';
 import { logger } from '../utils/logger.js';
 
 dotenv.config();
 
+const APP_NAME = "FIND_PROVIDERS_AGENT";
 const FIND_PROVIDERS_AGENT_PORT = process.env.FIND_PROVIDERS_AGENT_PORT;
 if (!FIND_PROVIDERS_AGENT_PORT) {
   throw new Error('FIND_PROVIDERS_AGENT_PORT is not set');
 }
 const FIND_PROVIDERS_AGENT_BASE_URL = `http://localhost:${FIND_PROVIDERS_AGENT_PORT}`;
 
-export const FIND_PROVIDERS_AGENT_CARD: AgentCard = {
+const FIND_PROVIDERS_AGENT_CARD: AgentCard = {
   name: 'Find Providers Agent',
   description: 'Finds doctors and healthcare providers using MCP-backed tools.',
   protocolVersion: '0.3.0',
@@ -81,10 +81,12 @@ class FindProvidersAgentExecutor implements AgentExecutor {
     return;
   }
 }
-initA2AServer({
-  executor: new FindProvidersAgentExecutor(),
-  name: 'FIND_PROVIDERS_AGENT',
-  agentCard: FIND_PROVIDERS_AGENT_CARD,
-  url: FIND_PROVIDERS_AGENT_BASE_URL,
-  port: FIND_PROVIDERS_AGENT_PORT,
-});
+
+// Re-export the values needed by `servers/src/a2aServer/index.ts`
+export {
+  APP_NAME,
+  FIND_PROVIDERS_AGENT_PORT,
+  FIND_PROVIDERS_AGENT_BASE_URL,
+  FIND_PROVIDERS_AGENT_CARD,
+  FindProvidersAgentExecutor
+};

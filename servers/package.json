@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "server": "rm -rf logs/ && node --inspect ./dist/a2aServer/index.js",
     "client": "rm -f logs/a2aClientsTester.log && node ./dist/a2aClientsTester.js",
     "pa": "rm -f logs/policyAgent.log && node --inspect ./dist/a2aServer/policyAgent.js",
     "ra": "rm -f logs/researchAgent.log && node --inspect ./dist/a2aServer/researchAgent.js",

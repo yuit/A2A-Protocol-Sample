@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import { AgentCard } from '@a2a-js/sdk';
 import type { AgentExecutor } from '@a2a-js/sdk/server';
-import { initA2AServer } from '../utils/utils.js';
 import {
   LlmAgent,
   A2AAgentExecutor,
@@ -59,12 +58,13 @@ const RESEARCH_A2A_AGENT_EXECUTOR = new A2AAgentExecutor({
     memoryService: new InMemoryMemoryService(),
     artifactService: new InMemoryArtifactService(),
   }
-});
+}) as AgentExecutor;
 
-initA2AServer({
-  executor: RESEARCH_A2A_AGENT_EXECUTOR as AgentExecutor,
-  name: APP_NAME,
-  agentCard: RESEARCH_AGENT_CARD,
-  url: RESEARCH_AGENT_BASE_URL,
-  port: RESEARCH_AGENT_PORT,
-});
+// Re-export the values needed by `servers/src/a2aServer/index.ts`
+export {
+  APP_NAME,
+  RESEARCH_AGENT_CARD,
+  RESEARCH_AGENT_BASE_URL,
+  RESEARCH_AGENT_PORT,
+  RESEARCH_A2A_AGENT_EXECUTOR,
+};

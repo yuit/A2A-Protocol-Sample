@@ -19,7 +19,6 @@ import {
   ExecutionEventBus,
   RequestContext,
 } from '@a2a-js/sdk/server';
-import { initA2AServer } from '../utils/utils.js';
 import { logger } from '../utils/logger.js';
 
 // Load configuration from .env at project root
@@ -233,10 +232,12 @@ class PolicyAgentTaskExecutor implements AgentExecutor {
   }
 }
 
-initA2AServer({
-  executor: new PolicyAgentTaskExecutor(),
-  name: APP_NAME,
-  agentCard: POLICY_AGENT_CARD,
-  url: POLICY_AGENT_BASE_URL,
-  port: POLICY_AGENT_PORT,
-});
+// Re-export the values needed by `servers/src/a2aServer/index.ts`
+export {
+  APP_NAME,
+  POLICY_AGENT_CARD,
+  POLICY_AGENT_BASE_URL,
+  POLICY_AGENT_PORT,
+  PolicyAgentTaskExecutor,
+  PolicyAgentMessageExecutor,
+};
