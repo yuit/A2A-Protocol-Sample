@@ -1,9 +1,5 @@
 """
-Healthcare Concierge scaffold using BeeAI's RequirementAgent.
-
-This file is intentionally a scaffold: it sets up the core RequirementAgent
-structure and shows where to plug in additional tools (including your A2A
-remote agents).
+Healthcare Concierge Agent using BeeAI's RequirementAgent.
 """
 
 import os
