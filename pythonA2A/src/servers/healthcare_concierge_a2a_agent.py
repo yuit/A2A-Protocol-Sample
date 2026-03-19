@@ -10,7 +10,8 @@ import os
 from typing import Final, Tuple
 from dotenv import load_dotenv
 from pathlib import Path
-
+import asyncio
+import sys
 try:
   import beeai_framework  # noqa: F401
   from beeai_framework.agents.requirement import RequirementAgent
@@ -19,10 +20,12 @@ try:
   )
   from beeai_framework.adapters.gemini import GeminiChatModel
   from beeai_framework.adapters.a2a.agents import A2AAgent 
+  from beeai_framework.adapters.a2a.serve.server import A2AServer, A2AServerConfig
   from beeai_framework.memory.unconstrained_memory import UnconstrainedMemory
   from beeai_framework.tools.handoff import HandoffTool
   from beeai_framework.tools.think import ThinkTool
   from beeai_framework.middleware.trajectory import GlobalTrajectoryMiddleware
+  from beeai_framework.serve.utils import LRUMemoryManager
 except ModuleNotFoundError as e:
   raise ModuleNotFoundError(
     "beeai-framework is not installed in the current environment. "
@@ -31,7 +34,7 @@ except ModuleNotFoundError as e:
 
 load_dotenv()
 
-async def create_health_care_a2a_client_agents() -> Tuple[A2AAgent, A2AAgent, A2AAgent]:
+async def create_a2a_client_sub_agents() -> Tuple[A2AAgent, A2AAgent, A2AAgent]:
   """
   Create three BeeAI A2A clients:
   - policy
@@ -66,7 +69,6 @@ async def create_health_care_a2a_client_agents() -> Tuple[A2AAgent, A2AAgent, A2
 
   return policy_client, research_client, find_providers_client
 
-
 async def build_health_care_concierge_agent() -> RequirementAgent:
   """
   Create a RequirementAgent with rule-based tool execution constraints.
@@ -75,7 +77,7 @@ async def build_health_care_concierge_agent() -> RequirementAgent:
   workflow (e.g., call FindProviders via A2A, then decide next steps, etc.).
   """
   
-  policy_a2a, research_a2a, find_providers_a2a = await create_health_care_a2a_client_agents()
+  policy_a2a, research_a2a, find_providers_a2a = await create_a2a_client_sub_agents()
   print("Created BeeAI A2A clients:")
   print(f"- policy: {getattr(policy_a2a, '_url', None)}")
   print(f"- research: {getattr(research_a2a, '_url', None)}")
@@ -146,7 +148,7 @@ async def run_health_care_concierge_agent() -> None:
 
   output_file = Path("logs/healthcare_concierge_agent.tools.trajectory")
   output_file.parent.mkdir(exist_ok=True, parents=True)
-  with open(output_file) as target_log_file:
+  with open(output_file, "w", encoding="utf-8") as target_log_file:
     response = await agent.run(
       "I'm based in Austin, TX. How do I get mental health therapy near me and what does my insurance cover?"
     ).middleware(GlobalTrajectoryMiddleware(
@@ -162,7 +164,32 @@ async def run_health_care_concierge_agent() -> None:
       else response
     )
 
+async def run_health_care_concierge_agent_a2a_server() -> A2AServer:
+  healthcare_concierge_agent = await build_health_care_concierge_agent()
+  port = os.getenv("HEALTHCARE_CONCIERGE_AGENT_PORT")
+  if not port:
+    raise ValueError("HEALTHCARE_CONCIERGE_AGENT_PORT is not set")
+  server = A2AServer(
+    config=A2AServerConfig(host="127.0.0.1", port=port, protocol="jsonrpc"),
+    memory_manager=LRUMemoryManager(maxsize=100),
+  )
+  return server.register(healthcare_concierge_agent, send_trajectory=True)
+
+def main() -> None:
+  try:
+    mode = sys.argv[1].strip().lower() if len(sys.argv) > 1 else ""
+    if mode == "a2a":
+      # Build the agent in an async step, then run the blocking server.
+      server = asyncio.run(run_health_care_concierge_agent_a2a_server())
+      print(f"Server is running on port {server._config.port}")
+      server.serve()
+      return
+    # Default mode: run the agent without wrapping in a server.
+    asyncio.run(run_health_care_concierge_agent())
+  except KeyboardInterrupt:
+    print("Stopped by user.")
+  except asyncio.CancelledError:
+    print("Stopped by user.")
 
 if __name__ == "__main__":
-  import asyncio
-  asyncio.run(run_health_care_concierge_agent())
+  main()
