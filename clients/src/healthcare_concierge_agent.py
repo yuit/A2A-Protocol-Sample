@@ -17,13 +17,11 @@ try:
   from beeai_framework.agents.requirement.requirements.conditional import (
     ConditionalRequirement,
   )
-  from beeai_framework.backend import ChatModel
   from beeai_framework.adapters.gemini import GeminiChatModel
-  from beeai_framework.adapters.a2a.agents import A2AAgent, A2AAgentUpdateEvent
+  from beeai_framework.adapters.a2a.agents import A2AAgent 
   from beeai_framework.memory.unconstrained_memory import UnconstrainedMemory
   from beeai_framework.tools.handoff import HandoffTool
   from beeai_framework.tools.think import ThinkTool
-  from beeai_framework.tools.tool import Tool
   from beeai_framework.middleware.trajectory import GlobalTrajectoryMiddleware
 except ModuleNotFoundError as e:
   raise ModuleNotFoundError(
@@ -32,15 +30,6 @@ except ModuleNotFoundError as e:
   ) from e
 
 load_dotenv()
-
-def _make_a2a_agent(*, name: str, base_url: str) -> A2AAgent:
-  """
-  Create a BeeAI A2A client agent wrapper.
-
-  Note: A2A servers typically accept a prompt string directly.
-  """
-  return A2AAgent(url=base_url, memory=UnconstrainedMemory())
-
 
 async def create_health_care_a2a_client_agents() -> Tuple[A2AAgent, A2AAgent, A2AAgent]:
   """
@@ -147,7 +136,7 @@ async def build_health_care_concierge_agent() -> RequirementAgent:
 
   return requirement_agent
 
-async def main() -> None:
+async def run_health_care_concierge_agent() -> None:
   """
   Minimal local smoke test: create A2A clients, then (optionally) run the concierge
   RequirementAgent if you have LLM credentials configured.
@@ -155,7 +144,7 @@ async def main() -> None:
 
   agent = await build_health_care_concierge_agent()
 
-  output_file = Path("logs/healthcare_concierge_agent_tools.log")
+  output_file = Path("logs/healthcare_concierge_agent.tools.trajectory")
   output_file.parent.mkdir(exist_ok=True, parents=True)
   with open(output_file) as target_log_file:
     response = await agent.run(
@@ -176,6 +165,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
   import asyncio
-
-  asyncio.run(main())
-
+  asyncio.run(run_health_care_concierge_agent())

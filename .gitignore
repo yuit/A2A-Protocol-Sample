@@ -11,8 +11,7 @@ node_modules/
 dist/
 
 # Logs
-*.log
-logs/*
+**/logs/
 
 # Editor
 .vscode/
