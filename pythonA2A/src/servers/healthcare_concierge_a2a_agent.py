@@ -79,20 +79,19 @@ async def build_health_care_concierge_agent() -> RequirementAgent:
   print(f"- research: {getattr(research_a2a, '_url', None)}")
   print(f"- find_providers: {getattr(find_providers_a2a, '_url', None)}")
 
-  # Core tools (minimal scaffold).
   tools = [
-    think_tool:=ThinkTool(),
-    policy_tool:=HandoffTool(
+    ThinkTool(),
+    HandoffTool(
       target=policy_a2a,
       name="Insurance Policy Agent",
       description=policy_a2a.agent_card.description
     ),
-    research_tool:=HandoffTool(
+    HandoffTool(
       target=research_a2a,
       name="Healthcare Research Agent",
       description=research_a2a.agent_card.description
     ),
-    find_providers_tool:=HandoffTool(
+    HandoffTool(
       target=find_providers_a2a,
       name="Find Providers Agent",
       description=find_providers_a2a.agent_card.description
@@ -107,11 +106,11 @@ async def build_health_care_concierge_agent() -> RequirementAgent:
     tools=tools,
     requirements=[
       ConditionalRequirement(
-          ThinkTool,
-          name="Condition: Use ThinkTool before and after calling any other tool",
-          force_at_step=1,
-          force_after=tools, 
-          consecutive_allowed=False
+        ThinkTool,
+        name="Condition: Use ThinkTool before and after calling any other tool",
+        force_after=tools, 
+        force_at_step=1,
+        consecutive_allowed=False
       ),
     ],
     instructions=(
@@ -153,7 +152,6 @@ async def run_health_care_concierge_agent() -> None:
       excluded=[GeminiChatModel]
     ));
 
-    # BeeAI response shape can change; this keeps the scaffold resilient.
     print(
       getattr(response, "last_message", response).text
       if hasattr(response, "last_message")
