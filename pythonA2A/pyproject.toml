@@ -10,4 +10,6 @@ dependencies = [
   "python-dotenv",
   "agent-framework-a2a>=1.0.0b260311",
   "beeai-framework[a2a]>=0.1.78",
+  "agentstack-sdk>=0.6.2",
+  "watchfiles>=1.1.1",
 ]
