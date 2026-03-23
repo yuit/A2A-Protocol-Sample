@@ -1,0 +1,11 @@
+[project]
+name = "pythonadk-client"
+version = "0.1.0"
+description = "ADK client for policy and research A2A agents"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+  "google-adk[a2a]",
+  "python-dotenv",
+]
+

@@ -1,0 +1,4 @@
+app:
+  name: policy_and_research_agent
+  root_agent: agent.root_agent
+

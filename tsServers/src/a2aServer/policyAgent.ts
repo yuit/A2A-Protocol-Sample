@@ -60,6 +60,7 @@ const POLICY_AGENT_CARD: AgentCard = {
   capabilities: { pushNotifications: false },
   defaultInputModes: ['text'],
   defaultOutputModes: ['text'],
+  preferredTransport: 'JSONRPC',
   additionalInterfaces: [
     { url: `${POLICY_AGENT_BASE_URL}/a2a/jsonrpc`, transport: 'JSONRPC' },
     { url: `${POLICY_AGENT_BASE_URL}/a2a/rest`, transport: 'HTTP+JSON' },

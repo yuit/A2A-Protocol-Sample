@@ -32,7 +32,7 @@ export function initA2AServer(config: A2AAgentConfig) {
   const requestHandler = new DefaultRequestHandler(agentCard, taskStore, executor);
 
   const app = express();
-
+  app.use(jsonRpcHandler({ requestHandler, userBuilder: UserBuilder.noAuthentication }));
   app.use(`/${AGENT_CARD_PATH}`, agentCardHandler({ agentCardProvider: requestHandler }));
   app.use(
     '/a2a/jsonrpc',

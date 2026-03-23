@@ -31,6 +31,7 @@ const FIND_PROVIDERS_AGENT_CARD: AgentCard = {
   capabilities: { pushNotifications: false },
   defaultInputModes: ['text'],
   defaultOutputModes: ['text'],
+  preferredTransport: 'JSONRPC',
   additionalInterfaces: [
     { url: `${FIND_PROVIDERS_AGENT_BASE_URL}/a2a/jsonrpc`, transport: 'JSONRPC' },
     { url: `${FIND_PROVIDERS_AGENT_BASE_URL}/a2a/rest`, transport: 'HTTP+JSON' },

@@ -17,7 +17,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory import InMemoryMemoryService
-
+from google.adk.runners import InMemoryRunner
 # Load env so we can read the ports configured for the JS servers.
 load_dotenv()
 
@@ -59,3 +59,11 @@ root_agent = SequentialAgent(
   description="Sequential agent that calls the Policy then Research A2A agents.",
   sub_agents=[policy_agent, research_agent],
 )
+
+async def main():
+  runner = InMemoryRunner(root_agent)
+  await runner.run_debug("How can I get mental health therapy?")
+
+if __name__ == "__main__":
+  import asyncio
+  asyncio.run(main())
