@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Start all AgentStack proxy servers: policy, research, and find-providers.
+Start all AgentStack servers:
+- policy proxy
+- research proxy
+- find-providers proxy
+- healthcare concierge
 
 Each runs in its own process. Load env from pythonA2A/.env (run from repo root).
 
@@ -11,6 +15,7 @@ Listen ports (read from environment after .env is loaded; defaults shown):
   POLICY_AGENTSTACK_PORT — default 8887
   RESEARCH_AGENTSTACK_PORT — default 8889
   FIND_PROVIDERS_AGENTSTACK_PORT — default 8890
+  HEALTHCARE_CONCIERGE_AGENTSTACK_PORT — default 8888
 
 Usage (from pythonA2A):
 
@@ -22,8 +27,12 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import asyncio
 import time
 from pathlib import Path
+from logger import get_logger
+
+logger = get_logger(name="RunAgentStack")
 
 
 def _python_a2a_root() -> Path:
@@ -53,9 +62,10 @@ def main() -> int:
   )
 
   # Stack listen ports: os.environ includes values from the shell and load_dotenv().
-  policy_agentstack_port = os.getenv("POLICY_AGENTSTACK_PORT")
-  research_agentstack_port = os.getenv("RESEARCH_AGENTSTACK_PORT")
-  find_providers_agentstack_port = os.getenv("FIND_PROVIDERS_AGENTSTACK_PORT")
+  policy_agentstack_port = os.getenv("POLICY_AGENTSTACK_PORT", "8887")
+  research_agentstack_port = os.getenv("RESEARCH_AGENTSTACK_PORT", "8889")
+  find_providers_agentstack_port = os.getenv("FIND_PROVIDERS_AGENTSTACK_PORT", "8890")
+  healthcare_concierge_agentstack_port = os.getenv("HEALTHCARE_CONCIERGE_AGENTSTACK_PORT", "8888")
 
   specs: list[tuple[str, str, str, str]] = [
     ("policy", "agentstack.policy_a2a", "POLICY_AGENTSTACK_PORT", policy_agentstack_port),
@@ -66,13 +76,19 @@ def main() -> int:
       "FIND_PROVIDERS_AGENTSTACK_PORT",
       find_providers_agentstack_port,
     ),
+    (
+      "healthcare_concierge",
+      "healthcare_concierge_agentstack",
+      "HEALTHCARE_CONCIERGE_AGENTSTACK_PORT",
+      healthcare_concierge_agentstack_port,
+    ),
   ]
 
   processes: list[subprocess.Popen] = []
   try:
     for label, module, port_key, port in specs:
       child_env = {**env, port_key: str(port)}
-      print(f"[run_all_agentstack] Starting {label} ({module}) {port_key}={port}")
+      logger.info(f"Starting {label} ({module}) {port_key}={port}")
       proc = subprocess.Popen(
         [sys.executable, "-m", module],
         cwd=str(project_root),
@@ -80,17 +96,18 @@ def main() -> int:
       )
       processes.append(proc)
 
-    print("[run_all_agentstack] All AgentStack proxies running. Ctrl+C to stop.")
+    logger.info("All AgentStack servers running. Ctrl+C to stop.")
     while True:
       for proc in processes:
         code = proc.poll()
         if code is not None:
-          print(f"[run_all_agentstack] A child exited with code {code}")
+          logger.error(f"A child exited with code {code}")
           return int(code) if code else 1
       time.sleep(0.3)
   except KeyboardInterrupt:
-    print("\n[run_all_agentstack] Stopping...")
-    return 0
+    print("Stopped by user.")
+  except asyncio.CancelledError:
+    print("Stopped by user.")
   finally:
     for proc in processes:
       if proc.poll() is None:

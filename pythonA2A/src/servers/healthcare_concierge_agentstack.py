@@ -26,9 +26,6 @@ from agentstack_sdk.a2a.extensions import (
 from beeai_framework.agents.requirement.requirements.conditional import (
   ConditionalRequirement,
 )
-from agentstack.policy_a2a import policy_server_agent_name
-from agentstack.research_a2a import research_server_agent_name
-from agentstack.find_providers_a2a import find_providers_server_agent_name
 from logger import get_logger
 
 logger = get_logger(
@@ -37,6 +34,9 @@ logger = get_logger(
 )
 # Make other AgentStack agents discoverable that have been deployed to the platform and make them available via handoff tools
 sub_agents = asyncio.run(AgentStackAgent.from_agent_stack())
+policy_agentstack_name = os.getenv("POLICY_AGENTSTACK_NAME")
+research_agentstack_name = os.getenv("RESEARCH_AGENTSTACK_NAME")
+find_providers_agentstack_name = os.getenv("FIND_PROVIDERS_AGENTSTACK_NAME")
 
 class HealthcareConciergeAgent:
   def __init__(self) -> None:
@@ -45,15 +45,15 @@ class HealthcareConciergeAgent:
       for a in sub_agents
       if a.name
       in {
-        policy_server_agent_name,
-        research_server_agent_name,
-        find_providers_server_agent_name,
+        policy_agentstack_name,
+        research_agentstack_name,
+        find_providers_agentstack_name,
       }
     }
-    print([a.name for a in sub_agents])
-    policy_handoff = HandoffTool(handoff_agents[policy_server_agent_name])
-    research_handoff = HandoffTool(handoff_agents[research_server_agent_name])
-    provider_handoff = HandoffTool(handoff_agents[find_providers_server_agent_name])
+    logger.info(f"Active AgentStack Agents: {[a.name for a in sub_agents]}")
+    policy_handoff = HandoffTool(handoff_agents[policy_agentstack_name])
+    research_handoff = HandoffTool(handoff_agents[research_agentstack_name])
+    find_providers_handoff = HandoffTool(handoff_agents[find_providers_agentstack_name])
 
     self._instructions = f"""
     You are a concierge for healthcare services. Your task is 
@@ -63,9 +63,11 @@ class HealthcareConciergeAgent:
     
     IMPORTANT:
     For insurance-related questions, first use  `{policy_handoff.name}` to try and answer the question.
+    For finding providers, use only ${find_providers_handoff.name} to find relevant providers.
+    For general healthcare questions, use `{research_handoff.name}`.
 
-    REASON: output the reasoning for calling each agent.
-    RESPONSE: return a detailed summary of the answers from the agents.
+    RESPONSE:
+    Return a detailed summary of the answers from the agents. Each topic should be in its own section.
     """ 
    
     tools = [
@@ -73,7 +75,7 @@ class HealthcareConciergeAgent:
       ThinkTool(),
       policy_handoff,
       research_handoff,
-      provider_handoff,
+      find_providers_handoff,
     ]
     self._agent = RequirementAgent(
       # GeminiChatModel will load model and api key from the environment variables.
@@ -165,9 +167,9 @@ async def wrap_health_care_concierge_agent_in_agentstack(
           logger.info(f"Reponse:{response}")
           yield response_text
         case _ if tool_name in {
-            policy_server_agent_name,
-            research_server_agent_name,
-            find_providers_server_agent_name,
+            policy_agentstack_name,
+            research_agentstack_name,
+            find_providers_agentstack_name,
         }:
           task = step_input.get("task", "No task")
           logger.info(f"Task:{task}")

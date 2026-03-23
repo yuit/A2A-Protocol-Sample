@@ -9,11 +9,13 @@ from agentstack_sdk.server import Server
 from agentstack_sdk.a2a.types import AgentMessage
 from beeai_framework.adapters.a2a.agents import A2AAgent
 from beeai_framework.memory.unconstrained_memory import UnconstrainedMemory
+from logger import get_logger
 
 load_dotenv()
+logger = get_logger(name="ResearchA2AAgent")
 
 research_port: Final[str | None] = os.getenv("RESEARCH_AGENT_PORT")
-research_server_agent_name: Final[str] = "Research Agent"
+research_server_agent_name: Final[str] = os.getenv("RESEARCH_AGENTSTACK_NAME")
 
 if not research_port:
     raise ValueError("RESEARCH_AGENT_PORT is not set")
@@ -22,9 +24,9 @@ research_a2a_client_agent = A2AAgent(
     url=f"http://localhost:{research_port}",
     memory=UnconstrainedMemory(),
 )
-print("[ResearchA2AAgent] Research A2A client created")
+logger.info("Research A2A client created")
 asyncio.run(research_a2a_client_agent.check_agent_exists())
-print("[ResearchA2AAgent] Completed checking A2A agent card")
+logger.info("Completed checking A2A agent card")
 
 server = Server()
 

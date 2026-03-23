@@ -11,11 +11,13 @@ from agentstack_sdk.server.context import RunContext
 from agentstack_sdk.a2a.types import AgentMessage
 from beeai_framework.adapters.a2a.agents import A2AAgent
 from beeai_framework.memory.unconstrained_memory import UnconstrainedMemory
+from logger import get_logger
 
 load_dotenv()
+logger = get_logger(name="PolicyA2AAgent")
 
 policy_port: Final[str] = os.getenv("POLICY_AGENT_PORT")
-policy_server_agent_name: Final[str] = "Policy Agent"
+policy_server_agent_name: Final[str] =os.getenv("POLICY_AGENTSTACK_NAME")
 
 if not policy_port:
   raise ValueError("POLICY_AGENT_PORT is not set")
@@ -24,9 +26,9 @@ policy_a2a_client_agent = A2AAgent(
   url=f"http://localhost:{policy_port}",
   memory=UnconstrainedMemory()
 )
-print(f"[PolicyA2AAgent] Policy A2A agent created")
+logger.info("Policy A2A agent created")
 asyncio.run(policy_a2a_client_agent.check_agent_exists())
-print(f"[PolicyA2AAgent] Completed checking A2A agent card")
+logger.info("Completed checking A2A agent card")
 
 server = Server()
 # Provide the server with an Agent name so it can be discovered on the Agent Stack Platform by name and called by the Healthcare agent as a handoff tool
