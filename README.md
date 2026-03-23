@@ -16,12 +16,11 @@ This repository explores the A2A multi-agent protocol based on the Deep Learning
 - [Node.js](https://nodejs.org/en/download)
 - Python >= 3.11
 - [Agent Stack](https://agentstack.beeai.dev/stable/introduction/quickstart)
-- API Keys:
-  - in tsServers:
-    - `GOOGLE_GENAI_API_KEY`
-    - `ANTHROPIC_API_KEY`
-  - in PythonA2A:
-    - `GEMINI_API_KEY`
+- API Keys in tsServers:
+  - `GOOGLE_GENAI_API_KEY`
+  - `ANTHROPIC_API_KEY`
+- API Keys in PythonA2A:
+  - `GEMINI_API_KEY`
 
 ## Run A2A TypeScipt servers
 ```bash
