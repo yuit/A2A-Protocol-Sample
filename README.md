@@ -1,4 +1,4 @@
-This repository explores the A2A multi-agent protocol based on the Deep Learning A2A course using various agentic development frameworks:
+This repository explores multi-agent using A2A protocol based on the Deep Learning A2A course using various agentic development frameworks:
 
 - [Google ADK](https://google.github.io/adk-docs/)
 - [Microsfot Agent Framework](https://learn.microsoft.com/en-us/agent-framework/integrations/a2a?tabs=dotnet-cli%2Cuser-secrets&pivots=programming-language-csharp)
