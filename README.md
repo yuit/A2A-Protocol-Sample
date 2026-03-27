@@ -1,4 +1,4 @@
-This repository explores multi-agent using A2A protocol based on the Deep Learning A2A course using various agentic development frameworks:
+This repository explores multi-agent using A2A protocol using various agentic development frameworks:
 
 - [Google ADK](https://google.github.io/adk-docs/)
 - [Microsfot Agent Framework](https://learn.microsoft.com/en-us/agent-framework/integrations/a2a?tabs=dotnet-cli%2Cuser-secrets&pivots=programming-language-csharp)
@@ -7,6 +7,7 @@ This repository explores multi-agent using A2A protocol based on the Deep Learni
 - [BeeAI Framework](https://framework.beeai.dev/introduction/welcome)
 - [Agent Stack](https://framework.beeai.dev/integrations/agent-stack)
 
+Data and frameworks based on Deep Learning A2A course
 ## Layout
 - `pythonA2A/` contains Python-based Agent Stack servers wrapping around A2A clients with built-in Agent Stack chat UI.
 - `tsServers/` contains TypeScript-based A2A services used by the agent workflow.
