@@ -8,10 +8,22 @@ This repository explores multi-agent using A2A protocol using various agentic de
 - [Agent Stack](https://framework.beeai.dev/integrations/agent-stack)
 
 Data and frameworks based on Deep Learning A2A course
-## Layout
-- `pythonA2A/` contains Python-based Agent Stack servers wrapping around A2A clients with built-in Agent Stack chat UI.
-- `tsServers/` contains TypeScript-based A2A services used by the agent workflow.
-- `pythonAdk/` is a standalone Python-based ADK wrapping around policy and research A2A clients with built-in Web ADK UI.
+## Project Structure
+```text
+(root)
+├── pythonA2A                         
+│   └── src/
+│       ├── clients/           # A2A clients using BeeAI Agent Framework           
+│       └── servers/           # BeeAI Agent Stack servers wrapping around A2A clients. Run as a standalone chat app via Agent Stack Web UI.
+│           └── agentstack/                     
+├── pythonAdk                  # A2A clients using Google Adk. Run as a standalone chat app via ADK web UI.
+│   └── agent/                 # Policy and research A2A client agents
+└── tsServers                  # A2A servers (remote agents)   
+│   ├── data/                  # "database"    
+│   └── src/
+│       ├── a2aServer/         # A2A servers implementation
+│       └── mcpServer/         # MCP servers implementation
+```
 
 ## Setup
 - [Node.js](https://nodejs.org/en/download)
