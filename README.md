@@ -10,7 +10,7 @@ This repository explores multi-agent using A2A protocol using various agentic de
 Data and frameworks based on Deep Learning A2A course
 ## Project Structure
 ```text
-(root)
+A2A-Protocol-Sample
 ├── pythonA2A                         
 │   └── src/
 │       ├── clients/           # A2A clients using BeeAI Agent Framework           
